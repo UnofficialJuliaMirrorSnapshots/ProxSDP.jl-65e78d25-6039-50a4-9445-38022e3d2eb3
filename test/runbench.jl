@@ -2,9 +2,6 @@ path = joinpath(dirname(@__FILE__), "..", "..")
 push!(Base.LOAD_PATH, path)
 datapath = joinpath(dirname(@__FILE__), "data")
 
-# using Debugger 
-
-# using JuMP
 is_julia1 = VERSION >= v"1.0"
 if is_julia1
     using Test
@@ -16,7 +13,6 @@ if is_julia1
 else
     using Base.Test
 end
-# import Base.is_empty
 
 use_MOI = true
 sets_to_test = Symbol[]
@@ -34,7 +30,7 @@ push!(sets_to_test, :SDPLIB)
     end
     include("moi_init.jl")
     # optimizer = MOIU.CachingOptimizer(ProxSDPModelData{Float64}(), ProxSDP.Optimizer(log_verbose=true, timer_verbose = true))
-    optimizer = ProxSDP.Solver(log_verbose=true, timer_verbose = true)#, tol_primal = 1e-3, tol_dual = 1e-3)
+    optimizer = ProxSDP.Solver(log_verbose=true, timer_verbose = true, convergence_window=200) #, tol_primal = 1e-3, tol_dual = 1e-3)
 else
     using JuMP
     # using CSDP
@@ -55,8 +51,8 @@ end
 println2(FILE, class::String, ref::String, sol::Nothing) = nothing
 
 RANDSDP_TEST_SET = 1:1
-SENSORLOC_TEST_SET = 50:50:300
-MIMO_TEST_SET = [100, 500, 1000, 2000, 3000, 4000, 5000]
+SENSORLOC_TEST_SET = 50:50:200
+MIMO_TEST_SET = [100, 500, 1000, 2000]
 GPP_TEST_SET = [
     "gpp124-1.dat-s",
     "gpp124-1.dat-s",
@@ -90,52 +86,10 @@ MAXCUT_TEST_SET = [
     "mcp500-4.dat-s",
     "maxG11.dat-s"  ,
     "maxG51.dat-s"  ,
-    "maxG32.dat-s"  ,
-    "maxG55.dat-s"  ,
-    "maxG60.dat-s"  ,
+    # "maxG32.dat-s"  ,
+    # "maxG55.dat-s"  ,
+    # "maxG60.dat-s"  ,
 ]
-if true
-    RANDSDP_TEST_SET = 1:1
-    SENSORLOC_TEST_SET = 50:50:200#300
-    MIMO_TEST_SET = [100, 500, 1000, 2000]#, 3000, 4000, 5000]
-    GPP_TEST_SET = [
-        "gpp124-1.dat-s",
-        "gpp124-1.dat-s",
-        "gpp124-2.dat-s",
-        "gpp124-3.dat-s",
-        "gpp124-4.dat-s",
-        "gpp250-1.dat-s",
-        "gpp250-2.dat-s",
-        "gpp250-3.dat-s",
-        "gpp250-4.dat-s",
-        "gpp500-1.dat-s",
-        "gpp500-2.dat-s",
-        "gpp500-3.dat-s",
-        "gpp500-4.dat-s",
-        "equalG11.dat-s",
-        "equalG51.dat-s",
-    ]
-    MAXCUT_TEST_SET = [
-        "mcp124-1.dat-s",
-        "mcp124-1.dat-s",
-        "mcp124-2.dat-s",
-        "mcp124-3.dat-s",
-        "mcp124-4.dat-s",
-        "mcp250-1.dat-s",
-        "mcp250-2.dat-s",
-        "mcp250-3.dat-s",
-        "mcp250-4.dat-s",
-        "mcp500-1.dat-s",
-        "mcp500-2.dat-s",
-        "mcp500-3.dat-s",
-        "mcp500-4.dat-s",
-        "maxG11.dat-s"  ,
-        "maxG51.dat-s"  ,
-        # "maxG32.dat-s"  ,
-        # "maxG55.dat-s"  ,
-        # "maxG60.dat-s"  ,
-    ]
-end
 
 if use_MOI
     if :RANDSDP in sets_to_test
