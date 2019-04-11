@@ -13,6 +13,7 @@ Argument | Description | Type | Values (default)
 log_verbose | print evolution of the process | `Bool` |  `false`
 log_freq | print evoluition of the process every n iterations | `Int` |  `100`
 timer_verbose | Outputs a time logger | `Bool` |  `false`
+time_limit | Maximum time the algorithm can try to solve in seconds | `Float64` |  `360000.0`
 max_iter | Maximum number of iterations | `Int` |  `1000000`
 tol_primal | Primal error tolerance | `Float64` |  `1e-3`
 tol_dual | Dual error tolerance | `Float64` |  `1e-3`
@@ -23,8 +24,8 @@ initial_beta | Initial primal/dual step ratio | `Float64` |  `1.0`
 min_beta | Minimum primal/dual step ratio | `Float64` |  `1e-4`
 max_beta | Maximum primal/dual step ratio | `Float64` |  `1e+4`
 convergence_window | Minimum number of iterations to update target rank | `Int` |  `200`
-max_linsearch_steps | Maximum number of iterations for linesearch | `Int` |  `1000`
-full_eig_decomp | Flag for using full eigenvalue decomposition | `Bool` |  `false`
+max\_linsearch\_steps | Maximum number of iterations for linesearch | `Int` |  `1000`
+full\_eig\_decomp | Flag for using full eigenvalue decomposition | `Bool` |  `false`
 
 ## JuMP example
 
