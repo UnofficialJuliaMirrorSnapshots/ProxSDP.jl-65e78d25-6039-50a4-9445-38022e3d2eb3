@@ -11,17 +11,42 @@
 [docs-img]: https://img.shields.io/badge/docs-latest-blue.svg
 [docs-url]: https://mariohsouto.github.io/ProxSDP.jl/latest/
 
-ProxSDP is a semidefinite programming ([SDP](https://en.wikipedia.org/wiki/Semidefinite_programming)) solver based on the paper ["Exploiting Low-Rank Structure in Semidefinite Programming by Approximate Operator Splitting"](https://arxiv.org/abs/1810.05231). ProxSDP solves general SDP problems by means of a first order proximal algorithm based on the [primal-dual hybrid gradient](http://www.cmapx.polytechnique.fr/preprint/repository/685.pdf), also known as Chambolle-Pock method. The main advantage of ProxSDP over other state-of-the-art solvers is the ability of exploit the low-rank property inherent to several SDP problems.
+**ProxSDP** is an open source semidefinite programming ([SDP](https://en.wikipedia.org/wiki/Semidefinite_programming)) solver based on the paper ["Exploiting Low-Rank Structure in Semidefinite Programming by Approximate Operator Splitting"](https://arxiv.org/abs/1810.05231). The main advantage of ProxSDP over other state-of-the-art solvers is the ability of exploit the **low-rank** structure inherent to several SDP problems.
 
 ### Overview of problems ProxSDP can solve
 
-* Any semidefinite programming problem in [standard form](http://web.stanford.edu/~boyd/papers/pdf/semidef_prog.pdf);
 * Semidefinite relaxations of nonconvex problems, e.g. [max-cut](http://www-math.mit.edu/~goemans/PAPERS/maxcut-jacm.pdf), [binary MIMO](https://arxiv.org/pdf/cs/0606083.pdf), [optimal power flow](http://authorstest.library.caltech.edu/141/1/TPS_OPF_2_tech.pdf), [sensor localization](https://web.stanford.edu/~boyd/papers/pdf/sensor_selection.pdf);
-* Nuclear norm minimization problems, e.g. [matrix completion](https://statweb.stanford.edu/~candes/papers/MatrixCompletion.pdf).
+* Nuclear norm minimization problems, e.g. [matrix completion](https://statweb.stanford.edu/~candes/papers/MatrixCompletion.pdf);
+
+## Installation
+
+You can install `ProxSDP.jl` through the [Julia package manager](https://docs.julialang.org/en/v1/stdlib/Pkg/index.html):
+```julia
+] add ProxSDP
+```
+
+## Using ProxSDP with JuMP
+
+```julia
+# Load packages
+using ProxSDP, JuMP
+
+# Build Max-Cut SDP relaxation via JuMP
+model = Model(with_optimizer(ProxSDP.Optimizer))
+@variable(model, X[1:num_vertex, 1:num_vertex], PSD)
+@objective(model, Max, 0.25 * dot(W, X))
+@constraint(model, diag(X) .== 1)
+
+# Solve optimization problem with ProxSDP
+JuMP.optimize!(model)
+
+# Retrieve solution
+Xsol = JuMP.value.(X)
+```
 
 ### Referencing
 
-The first version of the paper can be found [here](https://arxiv.org/abs/1810.05231).
+The preprint version of the paper can be found [here](https://arxiv.org/abs/1810.05231).
 
 ```
 @article{souto2018exploiting,
@@ -34,4 +59,6 @@ The first version of the paper can be found [here](https://arxiv.org/abs/1810.05
 
 ### ROAD MAP
 
-- Add support for exponential and power cones
+- Support for exponential and power cones;
+- Infeasibility certificate;
+- Warm start.
