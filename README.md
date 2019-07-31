@@ -1,4 +1,5 @@
-# ProxSDP
+![ProxSDP logo](https://github.com/mariohsouto/ProxSDP_aux/blob/master/logo_proxSDP_%20sem%20fundo.png "JuMP logo")
+---
 
 | **Build Status** |
 |:-----------------:|
@@ -32,16 +33,24 @@ You can install **ProxSDP** through the [Julia package manager](https://docs.jul
 For example, the semidefinite programming relaxation of the [max-cut](http://www-math.mit.edu/~goemans/PAPERS/maxcut-jacm.pdf) problem
 ```
     max   0.25 * W•X
-    s.t.  diag(X) == 1,
+    s.t.  diag(X) = 1,
           X ≽ 0,
 ```
 can be solved by the following code using **ProxSDP** and [JuMP](https://github.com/JuliaOpt/JuMP.jl).
 ```julia
 # Load packages
-using ProxSDP, JuMP
+using ProxSDP, JuMP, LinearAlgebra
+
+# Number of vertices
+n = 4
+# Graph weights
+W = [18.0  -5.0  -7.0  -6.0
+     -5.0   6.0   0.0  -1.0
+     -7.0   0.0   8.0  -1.0
+     -6.0  -1.0  -1.0   8.0]
 
 # Build Max-Cut SDP relaxation via JuMP
-model = Model(with_optimizer(ProxSDP.Optimizer))
+model = Model(with_optimizer(ProxSDP.Optimizer, log_verbose=true))
 @variable(model, X[1:n, 1:n], PSD)
 @objective(model, Max, 0.25 * dot(W, X))
 @constraint(model, diag(X) .== 1)
@@ -69,5 +78,4 @@ The preprint version of the paper can be found [here](https://arxiv.org/abs/1810
 ## ROAD MAP
 
 - Support for exponential and power cones;
-- Infeasibility certificate;
 - Warm start.
